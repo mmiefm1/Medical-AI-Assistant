@@ -64,7 +64,7 @@ def load_vectorstore(uploaded_files):
         chunks = splitter.split_documents(documents)
 
         texts = [chunk.page_content for chunk in chunks]
-        metadatas = [chunk.metadata for chunk in chunks]
+        metadatas = [{"text": chunk.page_content, **chunk.metadata} for chunk in chunks]
         ids = [f"{Path(file_path).stem}-{i}" for i in range(len(chunks))]
 
         print(f"Embedding {len(texts)} chunks...")
