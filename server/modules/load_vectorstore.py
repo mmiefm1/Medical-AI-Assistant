@@ -2,6 +2,7 @@ import os
 import time
 from pathlib import Path
 from dotenv import load_dotenv
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from tqdm.auto import tqdm
 from pinecone import Pinecone, ServerlessSpec
 from langchain_community.document_loaders import PyPDFLoader
@@ -31,7 +32,7 @@ existing_indexes=[i["name"] for i in pc.list_indexes()]
 if PINECONE_INDEX_NAME not in existing_indexes:
     pc.create_index(
         name=PINECONE_INDEX_NAME,
-        dimension=768,
+        dimension=384,
         metric="dotproduct",
         spec=spec
     )
@@ -44,9 +45,8 @@ index=pc.Index(PINECONE_INDEX_NAME)
 # load,split,embed and upsert pdf docs content
 
 def load_vectorstore(uploaded_files):
-    embed_model = GoogleGenerativeAIEmbeddings(
-        model="gemini-embedding-001",
-        output_dimensionality=768
+    embed_model = HuggingFaceEmbeddings(
+    model_name="BAAI/bge-small-en-v1.5"
     )
     file_paths = []
 
