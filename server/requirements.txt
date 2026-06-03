@@ -29,5 +29,7 @@ pydantic
 requests
 tqdm
 
+sentence-transformers
+
 # Logging (optional but recommended)
 loguru
