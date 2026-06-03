@@ -6,7 +6,8 @@ from tqdm.auto import tqdm
 from pinecone import Pinecone, ServerlessSpec
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_cohere import CohereEmbeddings
 
 load_dotenv()
 
@@ -34,7 +35,10 @@ def load_vectorstore(uploaded_files):
 
     index = pc.Index(PINECONE_INDEX_NAME)
 
-    embed_model = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+    embed_model = CohereEmbeddings(
+    cohere_api_key=os.environ["COHERE_API_KEY"],
+    model="embed-english-light-v3.0"
+)
 
     file_paths = []
     for file in uploaded_files:

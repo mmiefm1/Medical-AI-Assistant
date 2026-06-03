@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import CohereEmbeddings, HuggingFaceEmbeddings
+from langchain_cohere import CohereEmbeddings
 from modules.llm import get_llm_chain
 from modules.query_handlers import query_chain
 from langchain_core.documents import Document
@@ -23,8 +24,9 @@ async def ask_question(question: str = Form(...)):
         # Embed model + Pinecone setup
         pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
         index = pc.Index(os.environ["PINECONE_INDEX_NAME"])
-        embed_model = HuggingFaceEmbeddings(
-            model_name="BAAI/bge-small-en-v1.5"
+        embed_model = CohereEmbeddings(
+            cohere_api_key=os.environ["COHERE_API_KEY"],
+            model="embed-english-light-v3.0"
         )
         embedded_query = embed_model.embed_query(question)
         res = index.query(vector=embedded_query, top_k=3, include_metadata=True)
